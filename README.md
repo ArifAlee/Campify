@@ -1,2 +1,2 @@
 # Campify
-Full CRUD website - Authentication / RESTful API / Error Handling / Routing / Cookies / Sessions etc.
+Full CRUD website - EJS /Authentication / RESTful API / Error Handling / Routing / Cookies / Sessions etc.
