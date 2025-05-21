@@ -3,36 +3,13 @@ const router = express.Router({ mergeParams: true });
 const ExpressError = require("../utilities/expressError");
 const Campground = require("../models/campground");
 const Review = require("../models/review");
-const { reviewSchema } = require("../schemas");
+const reviews = require("../controllers/reviews")
+const {validateReview, isLoggedIn, checkReviewAuth} = require("../middleware")
 
 
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message);
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
-
-router.post("/", validateReview, async (req, res) => {
-  const campground = await Campground.findById(req.params.id);
-  const review = new Review(req.body.review);
-  campground.reviews.push(review);
-  await review.save();
-  await campground.save();
-  req.flash("success", "Review submitted.")
-  res.redirect(`/campgrounds/${campground._id}`);
-});
+router.post("/", isLoggedIn, validateReview, reviews.createReview);
 
 //If campground is deleted delete all it's reviews too
-router.delete("/:reviewId", async (req, res) => {
-  const { id, reviewId } = req.params;
-  await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-  await Review.findByIdAndDelete(req.params.reviewId);
-  req.flash("success", "Review deleted.")
-  res.redirect(`/campgrounds/${id}`);
-});
+router.delete("/:reviewId", isLoggedIn, checkReviewAuth, reviews.deleteReview);
 
 module.exports = router;

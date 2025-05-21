@@ -9,11 +9,12 @@ const ExpressError = require("./utilities/expressError");
 const flash = require("connect-flash");
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
-const User = require("./models/User")
+const User = require("./models/user")
 
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
-const userRoutes = require("./routes/user")
+const userRoutes = require("./routes/user");
+const { storeReturnTo } = require("./middleware");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/Campify")
@@ -36,6 +37,7 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
 
+
 const sessionConfig = {
   secret: "thisisneededandneedstobebetter",
   resave: false,
@@ -48,11 +50,6 @@ const sessionConfig = {
 };
 app.use(session(sessionConfig));
 app.use(flash())
-app.use((req, res, next) => {
-  res.locals.success = req.flash("success")
-  res.locals.error = req.flash("error")
-  next()  
-}); 
 
 //Passport for authentication and sessions
 app.use(passport.initialize())
@@ -61,6 +58,22 @@ passport.use(new LocalStrategy(User.authenticate()))
 
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
+app.use(storeReturnTo)
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user
+  res.locals.success = req.flash("success")
+  res.locals.error = req.flash("error")
+  next()  
+}); 
+
+//Middleware for return back to previous url before clicking login button (/login)
+app.use((req, res, next) => {
+  if(req.originalUrl !== "/login" && req.method === "GET"){
+    req.session.returnTo = req.originalUrl;
+  }
+  next()
+})
 
 //Routes
 app.use("/", userRoutes);
