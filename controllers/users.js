@@ -41,7 +41,7 @@ module.exports.login = (req, res) => {
   }
 
   module.exports.logout = (req, res, next) => {
-  req.logOut((err) => {
+  req.logout((err) => {
     if (err) return next(err);
     const redirectUrl = res.locals.returnTo || res.locals.previousUrl;
     req.flash("success", "You've been logged out");
