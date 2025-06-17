@@ -1,20 +1,42 @@
 <% layout("layouts/boilerplate")%>
+    <link rel="stylesheet" href="/stylesheets/stars.css">
+
     <a href="/campgrounds">Back to home</a>
     <div class="row">
         <div class="col-6 ">
+            <div id="carouselExample" class="carousel slide">
+                <div class="carousel-inner">
+                    <% campground.images.forEach((img, i)=> { %>
+                        <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                            <img src="<%=img.url%>" class="d-block w-100" alt="">
+                        </div>
+                        <% }) %>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
             <div class="card mb-3">
-                <img src="<%=campground.image %>" class="card-img-top" alt="Campground image">
                 <div class="card-body">
                     <h5 class="card-title">
                         <%=campground.name %>
                     </h5>
-                    <p class="card-text">Description: <%= campground.description %>
+                    <p class="card-text">
+                        <%= campground.description %>
                     </p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item text-muted">Location: <%=campground.location %>
+                    <li class="list-group-item text-muted">
+                        <%=campground.location %>
                     </li>
-                    <li class="list-group-item">Price: £<%= campground.price %>
+                    <li class="list-group-item">£<%= campground.price %>
                     </li>
                 </ul>
 
@@ -33,18 +55,21 @@
             </div>
         </div>
 
-        <!-- ADD REVIEW  -->
-        <div class="col-6">
+        
+        <!-- ADD REVIEW / MAP  -->
+        <div class="card col-6">
+
+                <div id='map' class="mb-3 w-100"></div>
+
             <h3>Leave a review</h3>
             <form action="/campgrounds/<%=campground._id%>/reviews" method="POST" class="mb-3 validated-form"
                 novalidate>
-                <div class="mb-2">
-                    <label for="" class="form-label" for="rating">Rating</label>
-                    <input type="range" class="form-range" name="review[rating]" id="rating" min="1" max="5">
+                <div>
+                    <%- include("../partials/rating") %>
                 </div>
                 <div class="mb-3">
                     <% if(!currentUser) { %>
-                        <div class="mb-3 mt-3">
+                        <div class="mb-3">
                             <a href="/login" class="btn btn-success" id="btn-login">Write a review</a>
                         </div>
                         <% } else { %>
@@ -60,30 +85,41 @@
 
             <!-- DISPLAY REVIEWS  -->
             <div class="mb-3">
-                <span class="mb-3">Reviews</span>
+                <span class="mb-3 underline">Reviews</span>
             </div>
             <div class="mb-3 d-flex flex-column-reverse">
-            <% for (let review of campground.reviews) { %>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Rating: <%=review.rating %>
-                        </h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">By <%= review.author.username %>
-                        </h6>
+                <% for (let review of campground.reviews) { %>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <p class="starability-result" data-rating="<%= review.rating %>">
+                                Rated: <%= review.rating %> stars
+                            </p>
 
-                        <p class="card-text">
-                            <%=review.body%>
-                        </p>
+                            <p class="card-text">
+                                <%=review.body%>
+                            </p>
 
-                        <% if (currentUser && review.author.equals(currentUser._id)) { %>
-                            <form action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
-                                method="POST">
-                                <button class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                            <% } %>
+                            <div class="text-muted d-flex justify-content-between" style="height: 1.5rem;">
+                                <p>- <%= review.author.username %>
+                                </p>
+                                <% if (currentUser && review.author.equals(currentUser._id)) { %>
+                                    <form
+                                        action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
+                                        method="POST">
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                    <% } %>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <% } %>
+                    <% } %>
             </div>
         </div>
     </div>
+
+    <script>
+        const mapToken = "<%-process.env.MAPBOX_TOKEN%>"
+        const campground = <%-JSON.stringify(campground)%>
+    </script>
+
+    <script src="/js/detailsPageMap.js"></script>

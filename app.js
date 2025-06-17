@@ -1,5 +1,11 @@
+if(process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+const sanitizeV5 = require('./utilities/mongoSanitizeV5.js');
 const express = require("express");
 const app = express();
+app.set('query parser', 'extended');
 const mongoose = require("mongoose");
 const path = require("path");
 const session = require("express-session");
@@ -10,6 +16,10 @@ const flash = require("connect-flash");
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
+const mongoSanitize = require("express-mongo-sanitize")
+
+
+
 
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
@@ -27,15 +37,12 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.get("/", (req, res) => {
-  res.render("home.ejs");
-});
 
 // MIDDLEWARE
 app.use(express.urlencoded({ extended: true })); // parse req.body
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(sanitizeV5({ replaceWith: '_' }));
 
 
 const sessionConfig = {
@@ -61,9 +68,9 @@ passport.deserializeUser(User.deserializeUser())
 
 app.use(storeReturnTo)
 app.use((req, res, next) => {
-  res.locals.currentUser = req.user
-  res.locals.success = req.flash("success")
-  res.locals.error = req.flash("error")
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next()  
 }); 
 
@@ -74,11 +81,13 @@ app.use((req, res, next) => {
   }
   next()
 })
-
 //Routes
 app.use("/", userRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
+app.get("/", (req, res) => {
+  res.render("home.ejs");
+});
 
 app.all(/(.*)/, (req, res, next) => {
   next(new ExpressError("Page not found", 404));
