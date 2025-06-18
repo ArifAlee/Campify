@@ -25,7 +25,7 @@ const MongoStore = require('connect-mongo');
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/user");
-const { storeReturnTo } = require("./middleware");
+const { storeReturnTo } = require("./utilities/middleware.js");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/Campify") 

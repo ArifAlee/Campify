@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const ExpressError = require("../utilities/expressError");
-const Campground = require("../models/campground");
-const Review = require("../models/review");
 const reviews = require("../controllers/reviews")
-const {validateReview, isLoggedIn, checkReviewAuth} = require("../middleware")
+const {validateReview, isLoggedIn, checkReviewAuth} = require("../utilities/middleware")
 
 
 router.post("/", isLoggedIn, validateReview, reviews.createReview);
