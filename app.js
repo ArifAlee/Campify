@@ -28,7 +28,7 @@ const userRoutes = require("./routes/user");
 const { storeReturnTo } = require("./utilities/middleware.js");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/Campify") 
+  .connect(dbUrl) 
   .then(() => console.log("Connected to campify DB"))
   .catch((e) => console.log("error connecting to DB", e));
 
@@ -108,7 +108,7 @@ app.use(
                 "'self'",
                 "blob:",
                 "data:",
-                "https://res.cloudinary.com/dzm6syibq/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://res.cloudinary.com/dzm6syibq/", 
                 "https://images.unsplash.com/",
             ],
             fontSrc: ["'self'", ...fontSrcUrls],
