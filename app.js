@@ -17,8 +17,8 @@ const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
 const helmet = require("helmet")
-
-
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/Campify"
+const MongoStore = require('connect-mongo');
 
 
 
@@ -28,7 +28,7 @@ const userRoutes = require("./routes/user");
 const { storeReturnTo } = require("./middleware");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/Campify")
+  .connect("mongodb://127.0.0.1:27017/Campify") 
   .then(() => console.log("Connected to campify DB"))
   .catch((e) => console.log("error connecting to DB", e));
 
@@ -45,8 +45,19 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(sanitizeV5({ replaceWith: '_' }));
 
+const secret = process.env.SECRET || "mveMjsu9p"
+
+const store = MongoStore.create({
+  mongoUrl:dbUrl,
+  touchAfter: 24 * 60 * 60,
+  secret
+})
+store.on("error", (error) => {
+  console.log("error connecting session to mongodb", error)
+})
 
 const sessionConfig = {
+  store,
   name: "_cs",
   secret: "mveMjsu9p",
   resave: false,
