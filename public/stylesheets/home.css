@@ -34,14 +34,28 @@ body {
   text-shadow: none;
 }
 
+main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
 h1 {
   animation: fadeDown 0.7s ease-in-out;
 }
+.desc {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  animation: fadeUp 0.7s ease-in-out;
+}
+
 
 .lead,
 .btn {
   animation: fadeUp 0.7s ease-in-out;
 }
+
 
 @keyframes fadeDown {
   0% {
@@ -69,7 +83,7 @@ h1 {
   header {
     display: none;
   }
-  sub {
+  .desc {
     display: none;
   }
   main {
@@ -78,22 +92,28 @@ h1 {
   h1, .lead, a {
     margin-bottom: 5rem;
   }
-}
-
-@media (max-width: 900px) {
   h3{
     display: none;
   }
-  sub {
-    display: contents;
-  }
+}
+
+@media (min-width: 600px) {
   h1, .lead, a {
     margin-bottom: 2.5rem;
   }
-}
-  
-  @media (min-width:900px) {
-    a {
-      margin-bottom: 6rem;
-    }    
+  a {
+    margin-bottom: 6rem;
   }
+  h3 {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  h3 {
+    display: contents;
+  }
+  main {
+    display: block;
+  }
+}
