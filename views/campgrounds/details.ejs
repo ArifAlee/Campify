@@ -1,8 +1,9 @@
 <% layout("layouts/boilerplate")%>
     <link rel="stylesheet" href="/stylesheets/stars.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
 
-    <div class="row">
-        <div class="col-6 ">
+    <div class="row details-container">
+        <div class="col-6 card-details">
             <div id="carouselExample" class="carousel slide">
                 <div class="carousel-inner">
                     <% campground.images.forEach((img, i)=> { %>
@@ -56,7 +57,7 @@
 
         
         <!-- ADD REVIEW / MAP  -->
-        <div class="card col-6">
+        <div class="card col-6 card-review">
 
                 <div id='map' class="mb-3 w-100"></div>
 
