@@ -45,7 +45,7 @@ h1 {
   animation: fadeDown 0.7s ease-in-out;
 }
 .desc {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.8rem;
   animation: fadeUp 0.7s ease-in-out;
 }
@@ -92,9 +92,7 @@ h1 {
   h1, .lead, a {
     margin-bottom: 5rem;
   }
-  h3{
-    display: none;
-  }
+
 }
 
 @media (min-width: 600px) {
@@ -104,15 +102,9 @@ h1 {
   a {
     margin-bottom: 6rem;
   }
-  h3 {
-    display: none;
-  }
 }
 
 @media (min-width: 768px) {
-  h3 {
-    display: contents;
-  }
   main {
     display: block;
   }
