@@ -28,10 +28,13 @@ body {
   border-bottom: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-.btn-secondary {
-  font-weight: 500;
-  color: #333 !important;
-  text-shadow: none;
+.view-camp-btn {
+  background-color: transparent;
+  color: white;
+}
+.view-camp-btn:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 main {
